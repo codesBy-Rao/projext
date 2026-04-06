@@ -12,6 +12,7 @@ import {
   Bar,
 } from 'recharts'
 import { getAnalyticsOverview, type OverviewData, type WeakTopic } from '../services/analyticsApi'
+import { extractApiErrorMessage } from '../services/errorUtils'
 
 const challengePromptByTopic = (topic: string) => {
   const lower = topic.toLowerCase()
@@ -83,7 +84,7 @@ const Analytics = () => {
         const data = await getAnalyticsOverview()
         setOverview(data)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load analytics')
+        setError(extractApiErrorMessage(err, 'Failed to load analytics'))
       } finally {
         setIsLoading(false)
       }

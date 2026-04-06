@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getSubmissionHistory, type HistoryItem, type HistoryPagination } from '../services/analyticsApi'
+import { extractApiErrorMessage } from '../services/errorUtils'
 
 const severityTone = (severity: HistoryItem['overallSeverity']) => {
   if (severity === 'high') {
@@ -34,7 +35,7 @@ const History = () => {
         setItems(data.items)
         setPagination(data.pagination)
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load history')
+        setError(extractApiErrorMessage(err, 'Failed to load history'))
       } finally {
         setIsLoading(false)
       }

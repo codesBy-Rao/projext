@@ -4,6 +4,7 @@ import { analyzeCode } from '../services/analyzeApi'
 import TopicWeaknessHeatmap from '../components/TopicWeaknessHeatmap'
 import PersonalizedChallengeWidget from '../components/PersonalizedChallengeWidget'
 import SmartBugFixSuggestionPanel from '../components/SmartBugFixSuggestionPanel'
+import { extractApiErrorMessage } from '../services/errorUtils'
 
 const CodeSubmission = () => {
   const location = useLocation()
@@ -47,7 +48,7 @@ const CodeSubmission = () => {
       })
       setMessage('Analysis complete. Refine your code and resubmit to improve your score.')
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Failed to analyze code'
+      const message = extractApiErrorMessage(err, 'Failed to analyze code')
       setMessage(message)
     } finally {
       setIsSubmitting(false)

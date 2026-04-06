@@ -8,7 +8,12 @@ type AuthGuardProps = {
 
 const AuthGuard = ({ children }: AuthGuardProps) => {
   const location = useLocation()
-  const { token } = useAuth()
+  const { token, logout, isTokenExpired } = useAuth()
+
+  if (token && isTokenExpired(token)) {
+    logout('Session expired. Please sign in again.')
+    return <Navigate to="/" replace state={{ from: location }} />
+  }
 
   if (!token) {
     return <Navigate to="/" replace state={{ from: location }} />

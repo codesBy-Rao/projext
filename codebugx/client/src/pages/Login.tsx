@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { readFetchErrorMessage } from '../services/errorUtils';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ const Login = () => {
       });
 
       if (!response.ok) {
-        const message = await response.text();
+        const message = await readFetchErrorMessage(response, 'Login failed');
         throw new Error(message || 'Login failed');
       }
 

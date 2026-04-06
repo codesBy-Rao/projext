@@ -1,29 +1,106 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { useEffect, useMemo, useState } from 'react';
 import ImprovementTimelineChart from '../components/ImprovementTimelineChart';
 import AchievementStreakPanel from '../components/AchievementStreakPanel';
 import PracticeRecommendationSection from '../components/PracticeRecommendationSection';
+import { getAnalyticsOverview, getSubmissionHistory, type HistoryItem, type OverviewData } from '../services/analyticsApi';
+import { extractApiErrorMessage } from '../services/errorUtils';
 
 const Dashboard = () => {
-  const topCards = [
-    { title: 'Total Submissions', value: '12,345', percentage: '+12%' },
-    { title: 'Most Frequent Bug', value: 'Loop Boundary', percentage: '-5%' },
-    { title: 'Weak Topic', value: 'Arrays', percentage: '+18%' },
-    { title: 'Improvement Score', value: '+25%', percentage: '+10%' },
-  ];
+  const [overview, setOverview] = useState<OverviewData | null>(null);
+  const [recentSubmissions, setRecentSubmissions] = useState<HistoryItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const barChartData = [
-    { name: 'Loop Boundary', frequency: 40 },
-    { name: 'Null Checks', frequency: 30 },
-    { name: 'Recursion', frequency: 30 },
-  ];
+  useEffect(() => {
+    const loadDashboard = async () => {
+      try {
+        setIsLoading(true);
+        setError('');
 
-  const pieChartData = [
-    { name: 'Arrays', value: 40 },
-    { name: 'Recursion', value: 30 },
-    { name: 'Null Checks', value: 30 },
-  ];
+        const [overviewData, historyData] = await Promise.all([
+          getAnalyticsOverview(),
+          getSubmissionHistory(1, 5),
+        ]);
+
+        setOverview(overviewData);
+        setRecentSubmissions(historyData.items);
+      } catch (err) {
+        setError(extractApiErrorMessage(err, 'Failed to load dashboard data'));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDashboard();
+  }, []);
+
+  const topCards = useMemo(() => {
+    const weakTopic = overview?.weakTopics?.[0];
+    const totalSubmissions = overview?.totalSubmissions ?? 0;
+    const mostFrequentBug = overview?.mostFrequentBug?.bugType || 'No bug data yet';
+    const weakTopicLabel = weakTopic?.topic || 'No weak topic yet';
+    const improvementScore = weakTopic ? `${Math.max(0, 100 - Math.round(weakTopic.weaknessScore))}%` : 'N/A';
+
+    return [
+      { title: 'Total Submissions', value: totalSubmissions.toString(), percentage: 'Live' },
+      { title: 'Most Frequent Bug', value: mostFrequentBug, percentage: 'Live' },
+      { title: 'Weak Topic', value: weakTopicLabel, percentage: 'Live' },
+      { title: 'Improvement Score', value: improvementScore, percentage: 'Live' },
+    ];
+  }, [overview]);
+
+  const barChartData = useMemo(() => {
+    if (!overview?.weakTopics?.length) {
+      return [
+        { name: 'No data', frequency: 0 },
+      ];
+    }
+
+    return overview.weakTopics.slice(0, 5).map((topic) => ({
+      name: topic.topic,
+      frequency: topic.bugCount,
+    }));
+  }, [overview]);
+
+  const pieChartData = useMemo(() => {
+    if (!overview?.weakTopics?.length) {
+      return [
+        { name: 'No data', value: 1 },
+      ];
+    }
+
+    return overview.weakTopics.slice(0, 5).map((topic) => ({
+      name: topic.topic,
+      value: topic.weaknessScore,
+    }));
+  }, [overview]);
 
   const chartColors = ['#3B82F6', '#F97316', '#10B981'];
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-7xl">
+        <header className="mb-8">
+          <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-300/80">Analytics Command Center</p>
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-white">Dashboard</h1>
+          <p className="mt-2 max-w-2xl text-sm text-slate-300">Loading dashboard data...</p>
+        </header>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mx-auto max-w-7xl">
+        <header className="mb-8">
+          <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-300/80">Analytics Command Center</p>
+          <h1 className="mt-3 text-4xl font-bold tracking-tight text-white">Dashboard</h1>
+        </header>
+        <div className="saas-card rounded-2xl border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-200">{error}</div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl">
@@ -114,18 +191,26 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody>
-              <tr className="border-b border-slate-700/60 hover:bg-slate-800/70 transition-colors duration-200">
-                <td className="py-2 px-4">6 Apr</td>
-                <td className="py-2 px-4">Loop Error</td>
-                <td className="py-2 px-4">Arrays</td>
-                <td className="py-2 px-4 text-red-400">High</td>
-              </tr>
-              <tr className="hover:bg-slate-800/70 transition-colors duration-200">
-                <td className="py-2 px-4">5 Apr</td>
-                <td className="py-2 px-4">Null Access</td>
-                <td className="py-2 px-4">Objects</td>
-                <td className="py-2 px-4 text-amber-400">Medium</td>
-              </tr>
+              {recentSubmissions.length === 0 ? (
+                <tr>
+                  <td className="py-3 px-4 text-slate-400" colSpan={4}>No submissions found yet.</td>
+                </tr>
+              ) : (
+                recentSubmissions.map((item) => {
+                  const firstBug = item.detectedBugs[0];
+                  return (
+                    <tr
+                      key={item.id}
+                      className="border-b border-slate-700/60 hover:bg-slate-800/70 transition-colors duration-200"
+                    >
+                      <td className="py-2 px-4">{new Date(item.analyzedAt).toLocaleDateString()}</td>
+                      <td className="py-2 px-4">{firstBug?.type || 'No bug detected'}</td>
+                      <td className="py-2 px-4">{firstBug?.topic || 'General'}</td>
+                      <td className="py-2 px-4 text-cyan-200">{item.overallSeverity}</td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
       </div>
