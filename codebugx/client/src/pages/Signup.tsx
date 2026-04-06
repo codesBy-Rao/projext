@@ -59,12 +59,16 @@ const Signup = () => {
   return (
     <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl items-center justify-center p-6">
       <div className="grid w-full gap-6 lg:grid-cols-2">
-        <section className="saas-card hover-lift rounded-2xl p-8">
+        <section className="saas-card hover-lift showcase-surface rounded-2xl p-8">
           <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-300/80">Get Started</p>
           <h2 className="mt-3 text-4xl font-bold tracking-tight text-white">Create your CodeBugX account</h2>
           <p className="mt-2 text-sm text-slate-300">
             Set up your workspace and start converting recurring bugs into a measurable improvement plan.
           </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="brand-sticker brand-sticker-cyan">NEW OPERATOR</span>
+            <span className="brand-sticker brand-sticker-violet">START STRONG</span>
+          </div>
           <div className="mt-6 space-y-3 text-sm text-slate-200">
             <p className="rounded-xl border border-slate-600/60 bg-black/20 px-3 py-2">Protected dashboard and submission history</p>
             <p className="rounded-xl border border-slate-600/60 bg-black/20 px-3 py-2">AI-guided challenge missions from weak topics</p>
@@ -73,7 +77,10 @@ const Signup = () => {
         </section>
 
         <section className="saas-card rounded-2xl p-8">
-          <h3 className="mb-6 text-2xl font-bold tracking-tight text-white">Signup</h3>
+          <h3 className="mb-3 text-2xl font-bold tracking-tight text-white">Signup</h3>
+        <div className="mb-4">
+          <span className="brand-sticker brand-sticker-amber">QUICK SETUP</span>
+        </div>
         {logoutReason ? (
           <div className="mb-4 rounded-xl border border-amber-300/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-200">
             {logoutReason}

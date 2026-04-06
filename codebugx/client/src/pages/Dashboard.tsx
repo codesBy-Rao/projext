@@ -118,12 +118,16 @@ const Dashboard = () => {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <header className="mb-8">
+      <header className="mb-8 showcase-surface rounded-2xl p-5">
         <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-300/80">Analytics Command Center</p>
         <h1 className="mt-3 text-4xl font-bold tracking-tight text-white">Dashboard</h1>
         <p className="mt-2 max-w-2xl text-sm text-slate-300">
           Monitor coding performance, detect recurring bug patterns, and track weakness trends with startup-grade visibility.
         </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <span className="brand-sticker brand-sticker-cyan">PRO COACH</span>
+          <span className="brand-sticker brand-sticker-violet">LIVE SIGNALS</span>
+        </div>
         <div className="mt-4 flex flex-wrap gap-3">
           <button
             type="button"

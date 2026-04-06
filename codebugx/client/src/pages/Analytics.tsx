@@ -217,12 +217,16 @@ const Analytics = () => {
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6 text-slate-100">
-      <header>
+      <header className="showcase-surface rounded-2xl p-5">
         <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-300/80">Analytics Lab</p>
         <h1 className="mt-3 text-4xl font-bold tracking-tight">Focus Sprint Studio</h1>
         <p className="mt-2 max-w-2xl text-sm text-slate-300">
           Transform weak-topic data into a weekly execution plan with measurable outcomes.
         </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <span className="brand-sticker brand-sticker-cyan">MISSION CONTROL</span>
+          <span className="brand-sticker brand-sticker-amber">WEEKLY SPRINT</span>
+        </div>
       </header>
 
       <div className="saas-card rounded-2xl border border-cyan-400/25 bg-gradient-to-r from-slate-900/65 via-slate-900/40 to-cyan-900/30 p-6">

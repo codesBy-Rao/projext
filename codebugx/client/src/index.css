@@ -231,3 +231,84 @@ button:hover {
     box-shadow: 0 0 0 rgba(56, 189, 248, 0.18), 0 0 18px rgba(56, 189, 248, 0.25);
   }
 }
+
+.brand-sticker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  backdrop-filter: blur(8px);
+  animation: stickerPulse 3s ease-in-out infinite;
+}
+
+.brand-sticker-cyan {
+  color: #cffafe;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(56, 189, 248, 0.12));
+  border-color: rgba(103, 232, 249, 0.45);
+}
+
+.brand-sticker-violet {
+  color: #ede9fe;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.25), rgba(167, 139, 250, 0.12));
+  border-color: rgba(196, 181, 253, 0.45);
+}
+
+.brand-sticker-amber {
+  color: #fef3c7;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.26), rgba(251, 191, 36, 0.12));
+  border-color: rgba(252, 211, 77, 0.45);
+}
+
+.brand-sticker-emerald {
+  color: #d1fae5;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.24), rgba(74, 222, 128, 0.12));
+  border-color: rgba(110, 231, 183, 0.45);
+}
+
+.showcase-surface {
+  position: relative;
+  overflow: hidden;
+}
+
+.showcase-surface::before {
+  content: '';
+  position: absolute;
+  inset: -20% auto auto -15%;
+  width: 220px;
+  height: 220px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0));
+  pointer-events: none;
+}
+
+.showcase-surface::after {
+  content: '';
+  position: absolute;
+  inset: auto -12% -30% auto;
+  width: 240px;
+  height: 240px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.18), rgba(168, 85, 247, 0));
+  pointer-events: none;
+}
+
+@keyframes stickerPulse {
+  0% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 rgba(56, 189, 248, 0.18);
+  }
+  50% {
+    transform: translateY(-1px);
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.2);
+  }
+  100% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 rgba(56, 189, 248, 0.18);
+  }
+}

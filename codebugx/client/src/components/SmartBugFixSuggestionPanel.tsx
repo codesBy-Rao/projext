@@ -25,13 +25,17 @@ for (let i = 0; i < arr.length; i++) {
 
 const SmartBugFixSuggestionPanel = () => {
   return (
-    <section className="saas-card rounded-2xl border border-emerald-300/25 bg-gradient-to-br from-slate-900/80 via-slate-900/65 to-emerald-900/25 p-6">
+    <section className="saas-card showcase-surface rounded-2xl border border-emerald-300/25 bg-gradient-to-br from-slate-900/80 via-slate-900/65 to-emerald-900/25 p-6">
       <div className="mb-5 flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-300/80">AI Fix Assistant</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">Smart Bug Fix Suggestion 🛠️</h2>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <span className="brand-sticker brand-sticker-cyan">FIX STUDIO</span>
+            <span className="brand-sticker brand-sticker-violet">BEFORE AND AFTER</span>
+          </div>
         </div>
-        <span className="rounded-xl border border-cyan-300/40 bg-cyan-400/15 px-3 py-1 text-xs font-semibold text-cyan-100">
+        <span className="brand-sticker brand-sticker-amber">
           ✨ Static Demo
         </span>
       </div>

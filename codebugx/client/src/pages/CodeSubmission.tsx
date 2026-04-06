@@ -73,11 +73,11 @@ const CodeSubmission = () => {
 
   return (
     <div className="mx-auto max-w-7xl p-6 text-slate-100">
-      <header className="mb-6">
+      <header className="mb-6 showcase-surface rounded-2xl p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-300/80">Build Lab</p>
           {practiceSource === 'practice-recommendations' && practiceTask ? (
-            <span className="rounded-xl border border-cyan-300/35 bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-100">
+            <span className="brand-sticker brand-sticker-cyan">
               Practice Source: Dashboard Recommendations {practiceTopic ? `- ${practiceTopic}` : ''}
             </span>
           ) : null}
@@ -86,6 +86,10 @@ const CodeSubmission = () => {
         <p className="mt-2 max-w-2xl text-sm text-slate-300">
           Paste your solution, run bug analysis, and iterate using focused AI feedback.
         </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <span className="brand-sticker brand-sticker-amber">ANALYZE MODE</span>
+          <span className="brand-sticker brand-sticker-violet">HINT ENGINE</span>
+        </div>
         {practiceSource === 'practice-recommendations' && practiceTask ? (
           <div className="mt-3 flex flex-wrap items-center gap-3">
             <p className="text-sm text-slate-300">

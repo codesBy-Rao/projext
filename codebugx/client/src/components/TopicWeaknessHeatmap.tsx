@@ -73,8 +73,12 @@ const TopicWeaknessHeatmap = () => {
   }, [liveTopics])
 
   return (
-    <section className="saas-card rounded-2xl p-6">
+    <section className="saas-card showcase-surface rounded-2xl p-6">
       <h2 className="text-2xl font-semibold tracking-tight text-white">Weakness Heatmap</h2>
+      <div className="mt-2 flex flex-wrap gap-2">
+        <span className="brand-sticker brand-sticker-cyan">SIGNAL VIEW</span>
+        <span className="brand-sticker brand-sticker-emerald">ACTIONABLE INSIGHTS</span>
+      </div>
       <p className="mt-1 text-sm text-slate-300">Topic-level weakness intensity with action-oriented guidance.</p>
       {loadError ? <p className="mt-2 text-xs text-amber-200">Live data unavailable, showing fallback preview.</p> : null}
 

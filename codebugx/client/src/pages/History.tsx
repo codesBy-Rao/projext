@@ -52,18 +52,22 @@ const History = () => {
 
   return (
     <div className="mx-auto max-w-7xl p-6 text-slate-100">
-      <header className="mb-6">
+      <header className="mb-6 showcase-surface rounded-2xl p-5">
         <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-300/80">Review Lab</p>
         <h1 className="mt-3 text-4xl font-bold tracking-tight">History</h1>
         <p className="mt-2 max-w-2xl text-sm text-slate-300">
           Review previous submissions, revisit repeated bug patterns, and compare improvements over time.
         </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <span className="brand-sticker brand-sticker-violet">TIME CAPSULE</span>
+          <span className="brand-sticker brand-sticker-emerald">PROGRESS LOG</span>
+        </div>
       </header>
 
       <section className="saas-card rounded-2xl p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xl font-semibold tracking-tight text-white">Submission Timeline</h2>
-          <span className="rounded-lg border border-cyan-300/35 bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-100">
+          <span className="brand-sticker brand-sticker-cyan">
             Total: {pagination.total}
           </span>
         </div>
