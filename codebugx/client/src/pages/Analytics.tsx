@@ -229,7 +229,7 @@ const Analytics = () => {
         </div>
       </header>
 
-      <div className="saas-card rounded-2xl border border-cyan-400/25 bg-gradient-to-r from-slate-900/65 via-slate-900/40 to-cyan-900/30 p-6">
+      <div className="saas-card showcase-surface rounded-2xl border border-cyan-400/25 bg-gradient-to-r from-slate-900/65 via-slate-900/40 to-cyan-900/30 p-6">
         <p className="text-sm text-cyan-100/90">{sprintInsight?.message}</p>
         <div className="mt-4 rounded-2xl border border-cyan-300/30 bg-black/20 p-4">
           <div className="flex flex-wrap items-end justify-between gap-4">
@@ -268,7 +268,10 @@ const Analytics = () => {
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <div className="saas-card hover-lift rounded-2xl p-5">
-          <h2 className="mb-4 text-xl font-semibold">7-Day Submission Rhythm</h2>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-xl font-semibold">7-Day Submission Rhythm</h2>
+            <span className="brand-sticker brand-sticker-cyan">FLOW TRACK</span>
+          </div>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={weeklyChartData}>
@@ -283,7 +286,10 @@ const Analytics = () => {
         </div>
 
         <div className="saas-card hover-lift rounded-2xl p-5">
-          <h2 className="mb-4 text-xl font-semibold">Weakness Heat</h2>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-xl font-semibold">Weakness Heat</h2>
+            <span className="brand-sticker brand-sticker-amber">RISK VIEW</span>
+          </div>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={weaknessBars} layout="vertical" margin={{ left: 12, right: 12 }}>
@@ -299,7 +305,10 @@ const Analytics = () => {
       </div>
 
       <div className="saas-card hover-lift rounded-2xl p-5">
-        <h2 className="mb-4 text-xl font-semibold">Challenge Generator</h2>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-xl font-semibold">Challenge Generator</h2>
+          <span className="brand-sticker brand-sticker-violet">SPRINT TASKS</span>
+        </div>
         {!hasWeakTopics ? (
           <div className="space-y-3 rounded-xl border border-slate-600/50 bg-slate-900/40 p-4">
             <p className="text-sm text-slate-300">
@@ -316,7 +325,7 @@ const Analytics = () => {
         ) : (
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
             {(overview?.weakTopics || []).slice(0, 3).map((topic) => (
-            <div key={topic.topic} className="rounded-2xl border border-slate-600/50 bg-slate-900/40 p-4">
+            <div key={topic.topic} className="rounded-2xl border border-slate-600/50 bg-slate-900/40 p-4 transition hover:border-cyan-300/40 hover:shadow-[0_0_20px_rgba(56,189,248,0.14)]">
               <p className="text-lg font-semibold">{topic.topic}</p>
               <p className={`mt-1 text-sm ${trendToneClass(topic.trend)}`}>Trend: {topic.trend}</p>
               <p className="mt-2 text-xs text-slate-300">
@@ -328,7 +337,7 @@ const Analytics = () => {
               <button
                 type="button"
                 onClick={() => handleStartChallenge(topic.topic)}
-                className="mt-4 w-full rounded-xl bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-cyan-400"
+                className="mt-4 w-full rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 px-4 py-2 text-sm font-semibold text-white transition hover:shadow-[0_0_18px_rgba(56,189,248,0.35)]"
               >
                 Start challenge
               </button>

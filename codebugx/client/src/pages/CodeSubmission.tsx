@@ -24,6 +24,7 @@ const CodeSubmission = () => {
   } | null>(null)
   const [hintPlan, setHintPlan] = useState<CoachInsights['hintPlan'] | null>(null)
   const [message, setMessage] = useState('')
+  const [messageType, setMessageType] = useState<'success' | 'error' | ''>('')
 
   useEffect(() => {
     const prompt = searchParams.get('prompt')
@@ -50,12 +51,14 @@ const CodeSubmission = () => {
   const handleSubmit = async () => {
     if (!codeSnippet.trim()) {
       setMessage('Add your code first to run analysis.')
+      setMessageType('error')
       return
     }
 
     try {
       setIsSubmitting(true)
       setMessage('')
+      setMessageType('')
       const response = await analyzeCode({ codeSnippet, language })
       const payload = response.data
       setAnalysisSummary({
@@ -63,9 +66,11 @@ const CodeSubmission = () => {
         bugs: payload.bugs,
       })
       setMessage('Analysis complete. Refine your code and resubmit to improve your score.')
+      setMessageType('success')
     } catch (err) {
       const message = extractApiErrorMessage(err, 'Failed to analyze code')
       setMessage(message)
+      setMessageType('error')
     } finally {
       setIsSubmitting(false)
     }
@@ -106,7 +111,7 @@ const CodeSubmission = () => {
         ) : null}
       </header>
 
-      <section className="saas-card rounded-2xl p-6">
+      <section className="saas-card showcase-surface rounded-2xl p-6">
         <div className="mb-4 flex items-center gap-3">
           <label htmlFor="language" className="text-sm text-gray-300">Language</label>
           <select
@@ -120,6 +125,7 @@ const CodeSubmission = () => {
             <option value="python">Python</option>
             <option value="java">Java</option>
           </select>
+          <span className="brand-sticker brand-sticker-emerald">LIVE DEBUG LAB</span>
         </div>
         <textarea
           className="h-96 w-full rounded-2xl border border-slate-600 bg-slate-900/80 p-4 font-mono text-sm text-slate-100 shadow-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -137,7 +143,18 @@ const CodeSubmission = () => {
             {isSubmitting ? 'Analyzing...' : 'Submit Code'}
           </button>
         </div>
-        {message ? <p className="mt-4 text-sm text-cyan-300">{message}</p> : null}
+        {message ? (
+          <p
+            className={`mt-4 rounded-lg border px-3 py-2 text-sm ${
+              messageType === 'error'
+                ? 'border-rose-300/40 bg-rose-500/10 text-rose-200'
+                : 'border-cyan-300/35 bg-cyan-500/10 text-cyan-200'
+            }`}
+            aria-live="polite"
+          >
+            {message}
+          </p>
+        ) : null}
         {analysisSummary ? (
           <div className="mt-6 rounded-2xl border border-cyan-400/30 bg-cyan-500/10 p-4 text-left">
             <p className="text-sm text-cyan-200">Overall severity: <span className="font-semibold">{analysisSummary.overallSeverity}</span></p>

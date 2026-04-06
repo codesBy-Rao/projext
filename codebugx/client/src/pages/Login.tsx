@@ -15,6 +15,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isResettingDemo, setIsResettingDemo] = useState(false);
   const [error, setError] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
 
   const redirectTo = (location.state as { from?: Location })?.from?.pathname || '/dashboard';
 
@@ -54,6 +55,7 @@ const Login = () => {
     event.preventDefault();
     setIsLoading(true);
     setError('');
+    setStatusMessage('');
 
     try {
       await performLogin(email, password);
@@ -67,6 +69,7 @@ const Login = () => {
   const handleDemoLogin = async () => {
     setIsLoading(true);
     setError('');
+    setStatusMessage('');
     setEmail(DEMO_EMAIL);
     setPassword(DEMO_PASSWORD);
 
@@ -87,6 +90,7 @@ const Login = () => {
 
     setIsResettingDemo(true);
     setError('');
+    setStatusMessage('');
 
     try {
       const response = await fetch('/api/ops/reset-demo', {
@@ -103,7 +107,7 @@ const Login = () => {
 
       setEmail(DEMO_EMAIL);
       setPassword(DEMO_PASSWORD);
-      setError('Demo data reset successfully. You can now click Try Demo.');
+      setStatusMessage('Demo data reset successfully. You can now click Try Demo.');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to reset demo data');
     } finally {
@@ -132,7 +136,7 @@ const Login = () => {
         </section>
 
         <section className="saas-card rounded-2xl p-8">
-          <h3 className="mb-3 text-2xl font-bold tracking-tight text-white">Login</h3>
+          <h3 className="mb-3 text-2xl font-bold tracking-tight text-white">Sign in</h3>
         <div className="mb-4 flex flex-wrap gap-2">
           <span className="brand-sticker brand-sticker-amber">SECURE ACCESS</span>
           <span className="brand-sticker brand-sticker-emerald">DEMO READY</span>
@@ -146,15 +150,22 @@ const Login = () => {
           </div>
         ) : null}
         {error ? (
-          <div className="mb-4 rounded-xl border border-red-300/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">
+          <div className="mb-4 rounded-xl border border-red-300/40 bg-red-500/10 px-3 py-2 text-sm text-red-200" role="alert" aria-live="polite">
             {error}
+          </div>
+        ) : null}
+        {statusMessage ? (
+          <div className="mb-4 rounded-xl border border-emerald-300/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200" aria-live="polite">
+            {statusMessage}
           </div>
         ) : null}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="mb-2 block text-sm text-slate-300">Email</label>
+            <label htmlFor="login-email" className="mb-2 block text-sm text-slate-300">Email</label>
             <input
+              id="login-email"
               type="email"
+              autoComplete="email"
               className="w-full rounded-xl border border-slate-600 bg-slate-900/80 px-4 py-2 text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Enter your email"
               value={email}
@@ -163,9 +174,11 @@ const Login = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="mb-2 block text-sm text-slate-300">Password</label>
+            <label htmlFor="login-password" className="mb-2 block text-sm text-slate-300">Password</label>
             <input
+              id="login-password"
               type="password"
+              autoComplete="current-password"
               className="w-full rounded-xl border border-slate-600 bg-slate-900/80 px-4 py-2 text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Enter your password"
               value={password}

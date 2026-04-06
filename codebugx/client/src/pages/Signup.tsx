@@ -77,7 +77,7 @@ const Signup = () => {
         </section>
 
         <section className="saas-card rounded-2xl p-8">
-          <h3 className="mb-3 text-2xl font-bold tracking-tight text-white">Signup</h3>
+          <h3 className="mb-3 text-2xl font-bold tracking-tight text-white">Sign up</h3>
         <div className="mb-4">
           <span className="brand-sticker brand-sticker-amber">QUICK SETUP</span>
         </div>
@@ -87,15 +87,17 @@ const Signup = () => {
           </div>
         ) : null}
         {error ? (
-          <div className="mb-4 rounded-xl border border-red-300/40 bg-red-500/10 px-3 py-2 text-sm text-red-200">
+          <div className="mb-4 rounded-xl border border-red-300/40 bg-red-500/10 px-3 py-2 text-sm text-red-200" role="alert" aria-live="polite">
             {error}
           </div>
         ) : null}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="mb-2 block text-sm text-slate-300">Email</label>
+            <label htmlFor="signup-email" className="mb-2 block text-sm text-slate-300">Email</label>
             <input
+              id="signup-email"
               type="email"
+              autoComplete="email"
               className="w-full rounded-xl border border-slate-600 bg-slate-900/80 px-4 py-2 text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Enter your email"
               value={email}
@@ -104,9 +106,11 @@ const Signup = () => {
             />
           </div>
           <div className="mb-4">
-            <label className="mb-2 block text-sm text-slate-300">Password</label>
+            <label htmlFor="signup-password" className="mb-2 block text-sm text-slate-300">Password</label>
             <input
+              id="signup-password"
               type="password"
+              autoComplete="new-password"
               className="w-full rounded-xl border border-slate-600 bg-slate-900/80 px-4 py-2 text-slate-100 focus:outline-none focus:ring-2 focus:ring-cyan-500"
               placeholder="Enter your password"
               value={password}

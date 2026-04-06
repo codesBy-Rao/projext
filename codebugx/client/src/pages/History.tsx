@@ -64,7 +64,7 @@ const History = () => {
         </div>
       </header>
 
-      <section className="saas-card rounded-2xl p-6">
+      <section className="saas-card showcase-surface rounded-2xl p-6">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xl font-semibold tracking-tight text-white">Submission Timeline</h2>
           <span className="brand-sticker brand-sticker-cyan">
@@ -113,7 +113,7 @@ const History = () => {
             {items.map((item) => (
               <article
                 key={item.id}
-                className="rounded-2xl border border-slate-600/60 bg-slate-900/45 p-4"
+                className="rounded-2xl border border-slate-600/60 bg-slate-900/45 p-4 transition hover:border-cyan-300/35 hover:shadow-[0_0_16px_rgba(56,189,248,0.14)]"
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
@@ -156,7 +156,7 @@ const History = () => {
                 type="button"
                 onClick={() => goToPage(Math.max(1, pagination.page - 1))}
                 disabled={pagination.page <= 1}
-                className="rounded-lg border border-slate-500/70 bg-slate-800/70 px-3 py-1.5 text-xs font-semibold text-slate-100 transition disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg bg-gradient-to-r from-cyan-500 to-violet-500 px-3 py-1.5 text-xs font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Previous
               </button>
@@ -167,7 +167,7 @@ const History = () => {
                 type="button"
                 onClick={() => goToPage(Math.min(pagination.totalPages, pagination.page + 1))}
                 disabled={pagination.page >= pagination.totalPages}
-                className="rounded-lg border border-slate-500/70 bg-slate-800/70 px-3 py-1.5 text-xs font-semibold text-slate-100 transition disabled:cursor-not-allowed disabled:opacity-40"
+                className="rounded-lg bg-gradient-to-r from-cyan-500 to-violet-500 px-3 py-1.5 text-xs font-semibold text-white transition disabled:cursor-not-allowed disabled:opacity-40"
               >
                 Next
               </button>
