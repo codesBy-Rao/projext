@@ -4,9 +4,11 @@
   "description": "CodeBugX Project",
   "private": true,
   "scripts": {
+    "setup": "node ./scripts/setup.js",
     "client": "npm --prefix ./codebugx/client run dev",
     "server": "npm --prefix ./codebugx/server run dev",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "start": "npm run dev",
     "smoke:api": "npm --prefix ./codebugx/server run smoke:api"
   },
   "devDependencies": {

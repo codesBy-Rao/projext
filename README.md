@@ -5,6 +5,28 @@ CodeBugX is a full-stack project with:
 - Frontend: React + Vite (`codebugx/client`)
 - Backend: Node.js + Express (`codebugx/server`)
 
+## Quick Start
+
+From the project root:
+
+```bash
+npm run setup
+```
+
+What setup does:
+
+- Installs root, client, and server dependencies
+- Creates `codebugx/server/.env` from `codebugx/server/.env.example` (if missing)
+- Runs API smoke checks
+
+Then start the app:
+
+```bash
+npm run start
+```
+
+If setup shows Windows `EPERM` file lock warnings (for example around `esbuild.exe`), close running dev servers and run `npm run setup` again.
+
 ## Run Locally
 
 From the project root:
@@ -43,7 +65,7 @@ Start backend only (normal mode):
 npm --prefix ./codebugx/server run dev
 ```
 
-Before first backend run, create an env file from the template:
+Before first backend run, create an env file from the template (only needed if you did not run `npm run setup`):
 
 ```powershell
 Copy-Item ./codebugx/server/.env.example ./codebugx/server/.env
