@@ -74,6 +74,15 @@ Default demo credentials:
 
 You can override these with backend env vars `DEMO_EMAIL` and `DEMO_PASSWORD`.
 
+To enable one-click demo data reset from the Login page, set `DEMO_RESET_TOKEN` in backend env.
+The Login page includes a `Reset Demo Data (Admin)` button that prompts for this token.
+
+You can also call the reset endpoint directly:
+
+```bash
+curl -X POST http://localhost:5000/api/ops/reset-demo -H "x-admin-token: your_token"
+```
+
 ## Backend Only
 
 Start backend only (normal mode):

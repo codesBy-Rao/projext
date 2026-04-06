@@ -13,6 +13,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isResettingDemo, setIsResettingDemo] = useState(false);
   const [error, setError] = useState('');
 
   const redirectTo = (location.state as { from?: Location })?.from?.pathname || '/dashboard';
@@ -75,6 +76,38 @@ const Login = () => {
       setError(err instanceof Error ? err.message : 'Demo login failed');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResetDemoData = async () => {
+    const adminToken = window.prompt('Enter admin token to reset demo data');
+    if (!adminToken) {
+      return;
+    }
+
+    setIsResettingDemo(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/ops/reset-demo', {
+        method: 'POST',
+        headers: {
+          'x-admin-token': adminToken,
+        },
+      });
+
+      if (!response.ok) {
+        const message = await readFetchErrorMessage(response, 'Failed to reset demo data');
+        throw new Error(message || 'Failed to reset demo data');
+      }
+
+      setEmail(DEMO_EMAIL);
+      setPassword(DEMO_PASSWORD);
+      setError('Demo data reset successfully. You can now click Try Demo.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to reset demo data');
+    } finally {
+      setIsResettingDemo(false);
     }
   };
 
@@ -146,6 +179,14 @@ const Login = () => {
             disabled={isLoading}
           >
             {isLoading ? 'Please wait...' : 'Try Demo'}
+          </button>
+          <button
+            type="button"
+            onClick={handleResetDemoData}
+            className="mt-3 w-full rounded-xl border border-amber-300/50 bg-slate-900/70 px-4 py-2 text-sm font-semibold text-amber-100 transition hover:bg-slate-800 disabled:opacity-70"
+            disabled={isLoading || isResettingDemo}
+          >
+            {isResettingDemo ? 'Resetting demo data...' : 'Reset Demo Data (Admin)'}
           </button>
         </form>
         </section>

@@ -10,8 +10,10 @@ const SubmissionHistory = require('../models/SubmissionHistory');
 const BugPatternFrequency = require('../models/BugPatternFrequency');
 const TopicWeaknessAnalytics = require('../models/TopicWeaknessAnalytics');
 
-const DEMO_EMAIL = (process.env.DEMO_EMAIL || 'demo@codebugx.dev').toLowerCase();
-const DEMO_PASSWORD = process.env.DEMO_PASSWORD || 'DemoPass123!';
+const getDemoCredentials = () => ({
+  email: (process.env.DEMO_EMAIL || 'demo@codebugx.dev').toLowerCase(),
+  password: process.env.DEMO_PASSWORD || 'DemoPass123!',
+});
 
 const dayOffsetDate = (daysAgo) => {
   const date = new Date();
@@ -156,15 +158,19 @@ const aggregateWeakTopics = (userId, submissions) => {
   });
 };
 
-const seed = async () => {
-  await connectDB();
+const upsertDemoData = async ({ connectIfNeeded = true, disconnectAfter = false, log = true } = {}) => {
+  if (connectIfNeeded && mongoose.connection.readyState !== 1) {
+    await connectDB();
+  }
 
-  let demoUser = await User.findOne({ email: DEMO_EMAIL });
+  const { email: demoEmail, password: demoPassword } = getDemoCredentials();
+
+  let demoUser = await User.findOne({ email: demoEmail });
   if (!demoUser) {
-    const hashedPassword = await bcrypt.hash(DEMO_PASSWORD, 10);
-    demoUser = await User.create({ email: DEMO_EMAIL, password: hashedPassword });
+    const hashedPassword = await bcrypt.hash(demoPassword, 10);
+    demoUser = await User.create({ email: demoEmail, password: hashedPassword });
   } else {
-    const hashedPassword = await bcrypt.hash(DEMO_PASSWORD, 10);
+    const hashedPassword = await bcrypt.hash(demoPassword, 10);
     demoUser.password = hashedPassword;
     await demoUser.save();
   }
@@ -216,16 +222,32 @@ const seed = async () => {
     await TopicWeaknessAnalytics.insertMany(weaknessDocs);
   }
 
-  console.log('Demo data seeded successfully.');
-  console.log(`Demo email: ${DEMO_EMAIL}`);
-  console.log(`Demo password: ${DEMO_PASSWORD}`);
+  if (log) {
+    console.log('Demo data seeded successfully.');
+    console.log(`Demo email: ${demoEmail}`);
+    console.log(`Demo password: ${demoPassword}`);
+  }
+
+  const summary = {
+    email: demoEmail,
+    password: demoPassword,
+    submissionsSeeded: demoSubmissions.length,
+  };
+
+  if (disconnectAfter) {
+    await mongoose.connection.close();
+  }
+
+  return summary;
 };
 
-seed()
-  .catch((error) => {
+module.exports = {
+  upsertDemoData,
+};
+
+if (require.main === module) {
+  upsertDemoData({ connectIfNeeded: true, disconnectAfter: true, log: true }).catch((error) => {
     console.error('Failed to seed demo data:', error.message);
     process.exitCode = 1;
-  })
-  .finally(async () => {
-    await mongoose.connection.close();
   });
+}
