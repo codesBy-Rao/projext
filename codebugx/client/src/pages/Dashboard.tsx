@@ -4,13 +4,23 @@ import { useNavigate } from 'react-router-dom';
 import ImprovementTimelineChart from '../components/ImprovementTimelineChart';
 import AchievementStreakPanel from '../components/AchievementStreakPanel';
 import PracticeRecommendationSection from '../components/PracticeRecommendationSection';
-import { getAnalyticsOverview, getSubmissionHistory, type HistoryItem, type OverviewData } from '../services/analyticsApi';
+import DailyMissionCard from '../components/DailyMissionCard';
+import WeeklyProgressWidget from '../components/WeeklyProgressWidget';
+import {
+  getAnalyticsOverview,
+  getCoachInsights,
+  getSubmissionHistory,
+  type CoachInsights,
+  type HistoryItem,
+  type OverviewData,
+} from '../services/analyticsApi';
 import { extractApiErrorMessage } from '../services/errorUtils';
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const [overview, setOverview] = useState<OverviewData | null>(null);
   const [recentSubmissions, setRecentSubmissions] = useState<HistoryItem[]>([]);
+  const [coachInsights, setCoachInsights] = useState<CoachInsights | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -20,13 +30,15 @@ const Dashboard = () => {
         setIsLoading(true);
         setError('');
 
-        const [overviewData, historyData] = await Promise.all([
+        const [overviewData, historyData, coachData] = await Promise.all([
           getAnalyticsOverview(),
           getSubmissionHistory(1, 5),
+          getCoachInsights(),
         ]);
 
         setOverview(overviewData);
         setRecentSubmissions(historyData.items);
+        setCoachInsights(coachData);
       } catch (err) {
         setError(extractApiErrorMessage(err, 'Failed to load dashboard data'));
       } finally {
@@ -142,6 +154,13 @@ const Dashboard = () => {
             </div>
           ))}
       </div>
+
+      {coachInsights ? (
+        <div className="mb-6 grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <DailyMissionCard mission={coachInsights.dailyMission} />
+          <WeeklyProgressWidget weeklyProgress={coachInsights.weeklyProgress} />
+        </div>
+      ) : null}
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <div className="saas-card hover-lift rounded-2xl p-6">

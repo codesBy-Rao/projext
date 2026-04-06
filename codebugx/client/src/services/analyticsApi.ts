@@ -25,6 +25,33 @@ export type OverviewData = {
   weakTopics: WeakTopic[]
 }
 
+export type CoachHint = {
+  level: 1 | 2 | 3
+  title: string
+  content: string
+}
+
+export type CoachInsights = {
+  dailyMission: {
+    topic: string
+    targetSubmissions: number
+    completedToday: number
+    targetBugReductionPercent: number
+    message: string
+  }
+  weeklyProgress: {
+    score: number
+    grade: 'A' | 'B' | 'C' | 'D' | 'E'
+    consistency: number
+    streakDays: number
+    trend: 'improving' | 'stable' | 'declining'
+  }
+  hintPlan: {
+    topic: string
+    hints: CoachHint[]
+  }
+}
+
 export type HistoryBug = {
   type: string
   severity: 'low' | 'medium' | 'high'
@@ -61,8 +88,18 @@ type OverviewResponse = {
   data: OverviewData
 }
 
+type CoachInsightsResponse = {
+  status: string
+  data: CoachInsights
+}
+
 export const getAnalyticsOverview = async () => {
   const response = await api.get<OverviewResponse>('/analytics/overview')
+  return response.data.data
+}
+
+export const getCoachInsights = async () => {
+  const response = await api.get<CoachInsightsResponse>('/analytics/coach')
   return response.data.data
 }
 

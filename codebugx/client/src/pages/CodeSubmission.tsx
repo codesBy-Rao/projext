@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { analyzeCode } from '../services/analyzeApi'
+import { getCoachInsights, type CoachInsights } from '../services/analyticsApi'
 import TopicWeaknessHeatmap from '../components/TopicWeaknessHeatmap'
 import PersonalizedChallengeWidget from '../components/PersonalizedChallengeWidget'
 import SmartBugFixSuggestionPanel from '../components/SmartBugFixSuggestionPanel'
+import TieredHintPanel from '../components/TieredHintPanel'
 import { extractApiErrorMessage } from '../services/errorUtils'
 
 const CodeSubmission = () => {
@@ -20,6 +22,7 @@ const CodeSubmission = () => {
     overallSeverity: 'none' | 'low' | 'medium' | 'high'
     bugs: Array<{ type: string; severity: 'low' | 'medium' | 'high'; topic: string }>
   } | null>(null)
+  const [hintPlan, setHintPlan] = useState<CoachInsights['hintPlan'] | null>(null)
   const [message, setMessage] = useState('')
 
   useEffect(() => {
@@ -30,6 +33,19 @@ const CodeSubmission = () => {
       setCodeSnippet(starter)
     }
   }, [searchParams, codeSnippet])
+
+  useEffect(() => {
+    const loadCoachHints = async () => {
+      try {
+        const coach = await getCoachInsights()
+        setHintPlan(coach.hintPlan)
+      } catch {
+        setHintPlan(null)
+      }
+    }
+
+    loadCoachHints()
+  }, [])
 
   const handleSubmit = async () => {
     if (!codeSnippet.trim()) {
@@ -142,6 +158,10 @@ const CodeSubmission = () => {
 
       <div className="mt-6">
         <SmartBugFixSuggestionPanel />
+      </div>
+
+      <div className="mt-6">
+        <TieredHintPanel hintPlan={hintPlan} latestBugs={analysisSummary?.bugs || []} />
       </div>
     </div>
   )
