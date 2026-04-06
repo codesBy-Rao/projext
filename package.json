@@ -9,7 +9,8 @@
     "server": "npm --prefix ./codebugx/server run dev",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "start": "npm run dev",
-    "smoke:api": "npm --prefix ./codebugx/server run smoke:api"
+    "smoke:api": "npm --prefix ./codebugx/server run smoke:api",
+    "seed:demo": "npm --prefix ./codebugx/server run seed:demo"
   },
   "devDependencies": {
     "concurrently": "^9.0.1"

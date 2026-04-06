@@ -57,6 +57,23 @@ What it checks:
 - Invalid auth payload returns `400`
 - Protected analyze route without token returns `401`
 
+## Demo Account (Seed Data)
+
+From the project root:
+
+```bash
+npm run seed:demo
+```
+
+This creates or refreshes a demo user plus sample analytics/history data.
+
+Default demo credentials:
+
+- Email: `demo@codebugx.dev`
+- Password: `DemoPass123!`
+
+You can override these with backend env vars `DEMO_EMAIL` and `DEMO_PASSWORD`.
+
 ## Backend Only
 
 Start backend only (normal mode):

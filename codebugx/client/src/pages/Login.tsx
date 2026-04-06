@@ -3,6 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { readFetchErrorMessage } from '../services/errorUtils';
 
+const DEMO_EMAIL = 'demo@codebugx.dev';
+const DEMO_PASSWORD = 'DemoPass123!';
+
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,37 +23,56 @@ const Login = () => {
     }
   }, [token, navigate, redirectTo]);
 
+  const performLogin = async (loginEmail: string, loginPassword: string) => {
+    const response = await apiFetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email: loginEmail, password: loginPassword }),
+    });
+
+    if (!response.ok) {
+      const message = await readFetchErrorMessage(response, 'Login failed');
+      throw new Error(message || 'Login failed');
+    }
+
+    const payload = await response.json();
+    const token = payload?.data?.token;
+
+    if (!token) {
+      throw new Error('Missing auth token');
+    }
+
+    login(token);
+    clearLogoutReason();
+    navigate(redirectTo);
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
     setError('');
 
     try {
-      const response = await apiFetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!response.ok) {
-        const message = await readFetchErrorMessage(response, 'Login failed');
-        throw new Error(message || 'Login failed');
-      }
-
-      const payload = await response.json();
-      const token = payload?.data?.token;
-
-      if (!token) {
-        throw new Error('Missing auth token');
-      }
-
-      login(token);
-      clearLogoutReason();
-      navigate(redirectTo);
+      await performLogin(email, password);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    setIsLoading(true);
+    setError('');
+    setEmail(DEMO_EMAIL);
+    setPassword(DEMO_PASSWORD);
+
+    try {
+      await performLogin(DEMO_EMAIL, DEMO_PASSWORD);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Demo login failed');
     } finally {
       setIsLoading(false);
     }
@@ -74,6 +96,9 @@ const Login = () => {
 
         <section className="saas-card rounded-2xl p-8">
           <h3 className="mb-6 text-2xl font-bold tracking-tight text-white">Login</h3>
+        <div className="mb-4 rounded-xl border border-cyan-300/35 bg-cyan-500/10 px-3 py-2 text-xs text-cyan-100">
+          Try Demo account: <span className="font-semibold">{DEMO_EMAIL}</span>
+        </div>
         {logoutReason ? (
           <div className="mb-4 rounded-xl border border-amber-300/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-200">
             {logoutReason}
@@ -113,6 +138,14 @@ const Login = () => {
             disabled={isLoading}
           >
             {isLoading ? 'Signing in...' : 'Login'}
+          </button>
+          <button
+            type="button"
+            onClick={handleDemoLogin}
+            className="mt-3 w-full rounded-xl border border-cyan-300/50 bg-slate-900/70 px-4 py-2 font-semibold text-cyan-100 transition hover:bg-slate-800 disabled:opacity-70"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Please wait...' : 'Try Demo'}
           </button>
         </form>
         </section>
