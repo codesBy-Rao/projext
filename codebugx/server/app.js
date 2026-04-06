@@ -42,8 +42,30 @@ const analyzeLimiter = rateLimit({
   },
 });
 
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:3000')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const localhostOriginPattern = /^http:\/\/localhost:\d+$/;
+
 const corsOptions = {
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
+  origin: (origin, callback) => {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    const isConfiguredOrigin = allowedOrigins.includes(origin);
+    const isLocalDevOrigin = process.env.NODE_ENV !== 'production' && localhostOriginPattern.test(origin);
+
+    if (isConfiguredOrigin || isLocalDevOrigin) {
+      return callback(null, true);
+    }
+
+    const corsError = new Error('Origin not allowed by CORS policy');
+    corsError.statusCode = 403;
+    return callback(corsError);
+  },
   credentials: true,
 };
 

@@ -43,6 +43,12 @@ Start backend only (normal mode):
 npm --prefix ./codebugx/server run dev
 ```
 
+Before first backend run, create an env file from the template:
+
+```powershell
+Copy-Item ./codebugx/server/.env.example ./codebugx/server/.env
+```
+
 ## Degraded Mode (Start Without Database)
 
 Use this only for API/middleware debugging when MongoDB is unavailable.
@@ -61,3 +67,4 @@ In degraded mode, API starts but database-dependent routes may fail.
 
 - Keep `codebugx/server/.env` configured for normal startup.
 - Request IDs and request logging are enabled on the backend.
+- Do not commit real secrets. Use `codebugx/server/.env.example` as the shared template.
