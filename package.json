@@ -6,7 +6,8 @@
   "scripts": {
     "client": "npm --prefix ./codebugx/client run dev",
     "server": "npm --prefix ./codebugx/server run dev",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "smoke:api": "npm --prefix ./codebugx/server run smoke:api"
   },
   "devDependencies": {
     "concurrently": "^9.0.1"

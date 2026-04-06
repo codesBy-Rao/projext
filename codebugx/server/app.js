@@ -5,6 +5,7 @@ const rateLimit = require('express-rate-limit');
 const apiRouter = require('./routes');
 const { notFoundHandler, errorHandler } = require('./middleware/error.middleware');
 const { assignRequestId } = require('./middleware/request-id.middleware');
+const { logRequest } = require('./middleware/request-logger.middleware');
 
 const app = express();
 
@@ -49,6 +50,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(helmet());
 app.use(assignRequestId);
+app.use(logRequest);
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 

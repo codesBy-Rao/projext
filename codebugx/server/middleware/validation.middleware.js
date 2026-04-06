@@ -9,8 +9,16 @@ const createValidationError = (message) => {
 const validateAuthPayload = (req, res, next) => {
   const { email, password } = req.body || {};
 
-  if (typeof email !== 'string' || typeof password !== 'string') {
-    return next(createValidationError('Email and password must be strings'));
+  if (email === undefined || password === undefined) {
+    return next(createValidationError('email and password are required'));
+  }
+
+  if (typeof email !== 'string') {
+    return next(createValidationError('email must be a string'));
+  }
+
+  if (typeof password !== 'string') {
+    return next(createValidationError('password must be a string'));
   }
 
   const normalizedEmail = email.trim().toLowerCase();
@@ -30,6 +38,10 @@ const validateAuthPayload = (req, res, next) => {
 
 const validateAnalyzePayload = (req, res, next) => {
   const { codeSnippet, language } = req.body || {};
+
+  if (codeSnippet === undefined || language === undefined) {
+    return next(createValidationError('codeSnippet and language are required'));
+  }
 
   if (typeof codeSnippet !== 'string' || !codeSnippet.trim()) {
     return next(createValidationError('codeSnippet must be a non-empty string'));
