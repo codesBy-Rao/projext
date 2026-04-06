@@ -190,12 +190,30 @@ const Analytics = () => {
       <div className="mx-auto max-w-7xl p-6 text-slate-100">
         <p className="text-sm font-medium uppercase tracking-[0.18em] text-cyan-300/80">Analytics Lab</p>
         <h1 className="mb-2 mt-3 text-4xl font-bold tracking-tight">Focus Sprint Studio</h1>
-        <div className="saas-card rounded-2xl border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-200">
-          {error}
+        <div className="saas-card space-y-3 rounded-2xl border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-200">
+          <p>{error}</p>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => navigate('/code-submission')}
+              className="rounded-lg bg-cyan-500 px-3 py-1.5 text-xs font-semibold text-slate-900 transition hover:bg-cyan-400"
+            >
+              Analyze New Code
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/dashboard')}
+              className="rounded-lg border border-slate-500/70 bg-slate-800/70 px-3 py-1.5 text-xs font-semibold text-slate-100 transition hover:border-cyan-300/60 hover:text-cyan-100"
+            >
+              Back To Dashboard
+            </button>
+          </div>
         </div>
       </div>
     )
   }
+
+  const hasWeakTopics = Boolean((overview?.weakTopics || []).length)
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 p-6 text-slate-100">
@@ -278,8 +296,22 @@ const Analytics = () => {
 
       <div className="saas-card hover-lift rounded-2xl p-5">
         <h2 className="mb-4 text-xl font-semibold">Challenge Generator</h2>
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {(overview?.weakTopics || []).slice(0, 3).map((topic) => (
+        {!hasWeakTopics ? (
+          <div className="space-y-3 rounded-xl border border-slate-600/50 bg-slate-900/40 p-4">
+            <p className="text-sm text-slate-300">
+              No weak-topic analytics yet. Submit a few code analyses to unlock personalized challenges.
+            </p>
+            <button
+              type="button"
+              onClick={() => navigate('/code-submission')}
+              className="rounded-lg bg-cyan-500 px-3 py-1.5 text-xs font-semibold text-slate-900 transition hover:bg-cyan-400"
+            >
+              Start First Challenge
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+            {(overview?.weakTopics || []).slice(0, 3).map((topic) => (
             <div key={topic.topic} className="rounded-2xl border border-slate-600/50 bg-slate-900/40 p-4">
               <p className="text-lg font-semibold">{topic.topic}</p>
               <p className={`mt-1 text-sm ${trendToneClass(topic.trend)}`}>Trend: {topic.trend}</p>
@@ -297,8 +329,9 @@ const Analytics = () => {
                 Start challenge
               </button>
             </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

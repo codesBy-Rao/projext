@@ -1,5 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ImprovementTimelineChart from '../components/ImprovementTimelineChart';
 import AchievementStreakPanel from '../components/AchievementStreakPanel';
 import PracticeRecommendationSection from '../components/PracticeRecommendationSection';
@@ -7,6 +8,7 @@ import { getAnalyticsOverview, getSubmissionHistory, type HistoryItem, type Over
 import { extractApiErrorMessage } from '../services/errorUtils';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [overview, setOverview] = useState<OverviewData | null>(null);
   const [recentSubmissions, setRecentSubmissions] = useState<HistoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -110,6 +112,22 @@ const Dashboard = () => {
         <p className="mt-2 max-w-2xl text-sm text-slate-300">
           Monitor coding performance, detect recurring bug patterns, and track weakness trends with startup-grade visibility.
         </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => navigate('/code-submission')}
+            className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-cyan-400"
+          >
+            Analyze New Code
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/analytics')}
+            className="rounded-xl border border-slate-500/70 bg-slate-800/70 px-4 py-2 text-sm font-semibold text-slate-100 transition hover:border-cyan-300/60 hover:text-cyan-100"
+          >
+            Open Focus Sprint Studio
+          </button>
+        </div>
       </header>
 
       <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
@@ -193,7 +211,18 @@ const Dashboard = () => {
             <tbody>
               {recentSubmissions.length === 0 ? (
                 <tr>
-                  <td className="py-3 px-4 text-slate-400" colSpan={4}>No submissions found yet.</td>
+                  <td className="py-4 px-4 text-slate-400" colSpan={4}>
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <span>No submissions found yet.</span>
+                      <button
+                        type="button"
+                        onClick={() => navigate('/code-submission')}
+                        className="rounded-lg bg-cyan-500 px-3 py-1.5 text-xs font-semibold text-slate-900 transition hover:bg-cyan-400"
+                      >
+                        Start First Analysis
+                      </button>
+                    </div>
+                  </td>
                 </tr>
               ) : (
                 recentSubmissions.map((item) => {

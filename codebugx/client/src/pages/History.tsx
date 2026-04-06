@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getSubmissionHistory, type HistoryItem, type HistoryPagination } from '../services/analyticsApi'
 import { extractApiErrorMessage } from '../services/errorUtils'
 
@@ -16,6 +17,7 @@ const severityTone = (severity: HistoryItem['overallSeverity']) => {
 }
 
 const History = () => {
+  const navigate = useNavigate()
   const [items, setItems] = useState<HistoryItem[]>([])
   const [pagination, setPagination] = useState<HistoryPagination>({
     page: 1,
@@ -67,10 +69,39 @@ const History = () => {
         </div>
 
         {isLoading ? <p className="text-sm text-slate-300">Loading submission history...</p> : null}
-        {error ? <p className="text-sm text-rose-200">{error}</p> : null}
+        {error ? (
+          <div className="space-y-3">
+            <p className="text-sm text-rose-200">{error}</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => navigate('/code-submission')}
+                className="rounded-lg bg-cyan-500 px-3 py-1.5 text-xs font-semibold text-slate-900 transition hover:bg-cyan-400"
+              >
+                Go To Code Submission
+              </button>
+              <button
+                type="button"
+                onClick={() => navigate('/dashboard')}
+                className="rounded-lg border border-slate-500/70 bg-slate-800/70 px-3 py-1.5 text-xs font-semibold text-slate-100 transition hover:border-cyan-300/60 hover:text-cyan-100"
+              >
+                Back To Dashboard
+              </button>
+            </div>
+          </div>
+        ) : null}
 
         {!isLoading && !error && items.length === 0 ? (
-          <p className="text-sm text-slate-300">No submissions yet. Analyze code to build your history timeline.</p>
+          <div className="space-y-3">
+            <p className="text-sm text-slate-300">No submissions yet. Analyze code to build your history timeline.</p>
+            <button
+              type="button"
+              onClick={() => navigate('/code-submission')}
+              className="rounded-lg bg-cyan-500 px-3 py-1.5 text-xs font-semibold text-slate-900 transition hover:bg-cyan-400"
+            >
+              Analyze Your First Snippet
+            </button>
+          </div>
         ) : null}
 
         {!isLoading && !error && items.length > 0 ? (
