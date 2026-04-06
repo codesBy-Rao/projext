@@ -49,6 +49,8 @@ export type CoachInsights = {
   hintPlan: {
     topic: string
     hints: CoachHint[]
+    recommendedUnlockLevel: 1 | 2 | 3
+    autoUnlockReason: string
   }
 }
 

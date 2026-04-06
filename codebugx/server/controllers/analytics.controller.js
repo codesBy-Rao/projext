@@ -116,6 +116,16 @@ const calculateStreakDays = (weeklyTrend) => {
   return streak;
 };
 
+const getRecommendedUnlockLevel = (repetitionCount) => {
+  if (repetitionCount >= 4) {
+    return 3;
+  }
+  if (repetitionCount >= 2) {
+    return 2;
+  }
+  return 1;
+};
+
 const getCoachInsights = async (req, res, next) => {
   try {
     const userId = req.user?.userId;
@@ -145,6 +155,28 @@ const getCoachInsights = async (req, res, next) => {
       totalSubmissions: 0,
       trend: 'stable',
     };
+
+    const recentSubmissions = await SubmissionHistory.find({ user: userId })
+      .sort({ analyzedAt: -1 })
+      .limit(3)
+      .select('detectedBugs')
+      .lean();
+
+    const repeatedBugCount = recentSubmissions.reduce((sum, submission) => {
+      const matchCount = (submission.detectedBugs || []).filter((bug) => {
+        if (!topWeakTopic.topic || topWeakTopic.topic === 'general') {
+          return bug.severity === 'high' || bug.severity === 'medium';
+        }
+        return String(bug.topic || '').toLowerCase() === String(topWeakTopic.topic).toLowerCase();
+      }).length;
+      return sum + matchCount;
+    }, 0);
+
+    const recommendedUnlockLevel = getRecommendedUnlockLevel(repeatedBugCount);
+    const autoUnlockReason =
+      repeatedBugCount === 0
+        ? 'No repeated recent bugs detected. Start from Level 1 coaching.'
+        : `Detected ${repeatedBugCount} repeated recent bug${repeatedBugCount === 1 ? '' : 's'} in your focus area.`;
 
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - 6);
@@ -215,6 +247,8 @@ const getCoachInsights = async (req, res, next) => {
         hintPlan: {
           topic: topWeakTopic.topic,
           hints: buildCoachHints(topWeakTopic.topic),
+          recommendedUnlockLevel,
+          autoUnlockReason,
         },
       },
     });
